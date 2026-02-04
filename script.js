@@ -4,6 +4,18 @@
 const TARGET_MINUTES = 12;              // timer goal (change to 10/15 as you want)
 const AUTOPLAY_SECONDS = 18;            // per slide during rehearsal
 const PEN_WIDTH = 4;                    // drawing thickness
+const IS_TOUCH_DEVICE = () => {
+  return (
+    (typeof window !== 'undefined' && 
+     typeof navigator !== 'undefined' &&
+     (navigator.maxTouchPoints > 0 || 
+      navigator.msMaxTouchPoints > 0 ||
+      ('ontouchstart' in window) ||
+      ('onmsgesturechange' in window)))
+  );
+};
+const IS_WINDOWS = /Windows/i.test(navigator.userAgent);
+const IS_MOBILE = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 // =============================
 // State
@@ -301,10 +313,14 @@ function toggleAutoplay(){ setAutoplay(!autoplayEnabled); }
 // =============================
 function resizeCanvas(){
   const dpr = window.devicePixelRatio || 1;
-  canvas.width = Math.floor(window.innerWidth * dpr);
-  canvas.height = Math.floor(window.innerHeight * dpr);
-  canvas.style.width = window.innerWidth + 'px';
-  canvas.style.height = window.innerHeight + 'px';
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  
+  canvas.width = Math.floor(width * dpr);
+  canvas.height = Math.floor(height * dpr);
+  canvas.style.width = width + 'px';
+  canvas.style.height = height + 'px';
+  
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
@@ -329,28 +345,44 @@ function clearDrawing(){
 }
 
 function pointerPos(e){
-  const x = e.clientX ?? (e.touches && e.touches[0]?.clientX) ?? 0;
-  const y = e.clientY ?? (e.touches && e.touches[0]?.clientY) ?? 0;
+  let x = 0, y = 0;
+  
+  if (e.clientX !== undefined && e.clientY !== undefined) {
+    x = e.clientX;
+    y = e.clientY;
+  } else if (e.touches && e.touches.length > 0) {
+    x = e.touches[0].clientX;
+    y = e.touches[0].clientY;
+  } else if (e.changedTouches && e.changedTouches.length > 0) {
+    x = e.changedTouches[0].clientX;
+    y = e.changedTouches[0].clientY;
+  } else if (e.pageX !== undefined && e.pageY !== undefined) {
+    x = e.pageX - window.scrollX;
+    y = e.pageY - window.scrollY;
+  }
+  
   return {x, y};
 }
 
-// Mouse move for laser
+// Mouse/Pointer move for laser (exclude touch on mobile)
 document.addEventListener('mousemove', (e) => {
-  if (!laserEnabled) return;
+  if (!laserEnabled || IS_TOUCH_DEVICE()) return;
   const {x,y} = pointerPos(e);
   laserDot.style.left = x + 'px';
   laserDot.style.top = y + 'px';
   laserDot.style.display = 'block';
-});
+}, {passive: true});
 
 // Pen drawing
 function startDraw(e){
   if (!penEnabled) return;
+  if (e.type.includes('touch')) e.preventDefault();
   drawing = true;
   lastPt = pointerPos(e);
 }
 function moveDraw(e){
   if (!penEnabled || !drawing) return;
+  if (e.type.includes('touch')) e.preventDefault();
   const pt = pointerPos(e);
   ctx.strokeStyle = 'rgba(255, 59, 48, 0.92)'; // red ink
   ctx.lineWidth = PEN_WIDTH;
@@ -360,19 +392,28 @@ function moveDraw(e){
   ctx.stroke();
   lastPt = pt;
 }
-function endDraw(){
+function endDraw(e){
+  if (e && e.type.includes('touch')) e.preventDefault();
   drawing = false;
   lastPt = null;
 }
 
-canvas.addEventListener('mousedown', startDraw);
-canvas.addEventListener('mousemove', moveDraw);
-window.addEventListener('mouseup', endDraw);
+// Mouse drawing
+canvas.addEventListener('mousedown', startDraw, {passive: true});
+canvas.addEventListener('mousemove', moveDraw, {passive: true});
+window.addEventListener('mouseup', endDraw, {passive: true});
 
-// touch
-canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e); }, {passive:false});
-canvas.addEventListener('touchmove', (e) => { e.preventDefault(); moveDraw(e); }, {passive:false});
-canvas.addEventListener('touchend', (e) => { e.preventDefault(); endDraw(); }, {passive:false});
+// Touch drawing (high priority)
+canvas.addEventListener('touchstart', startDraw, {passive: false});
+canvas.addEventListener('touchmove', moveDraw, {passive: false});
+canvas.addEventListener('touchend', endDraw, {passive: false});
+
+// Pointer events (unified handling for Windows pen, mouse, and touch)
+if (window.PointerEvent) {
+  canvas.addEventListener('pointerdown', startDraw, {passive: false});
+  canvas.addEventListener('pointermove', moveDraw, {passive: false});
+  window.addEventListener('pointerup', endDraw, {passive: true});
+}
 
 // =============================
 // Media modal (images / placeholders / pdf)
@@ -402,6 +443,7 @@ function openImageViewer({title, src, placeholderText}){
     img.style.maxHeight = 'none';
     img.style.transform = 'translate(0px,0px) scale(1)';
     img.style.cursor = 'grab';
+    img.style.touchAction = 'none';
     imgEl = img;
     modalBody.appendChild(imgEl);
 
@@ -410,19 +452,44 @@ function openImageViewer({title, src, placeholderText}){
       panning = true;
       imgEl.style.cursor = 'grabbing';
       panStart = {x: e.clientX, y: e.clientY, px: panX, py: panY};
-    });
+    }, {passive: true});
+    
+    imgEl.addEventListener('touchstart', (e) => {
+      if (mediaKind !== 'img' || IS_TOUCH_DEVICE() === false) return;
+      e.preventDefault();
+      panning = true;
+      const touch = e.touches[0];
+      panStart = {x: touch.clientX, y: touch.clientY, px: panX, py: panY};
+    }, {passive: false});
+    
     window.addEventListener('mousemove', (e) => {
-      if (!panning || !panStart) return;
+      if (!panning || !panStart || mediaKind !== 'img') return;
       panX = panStart.px + (e.clientX - panStart.x);
       panY = panStart.py + (e.clientY - panStart.y);
       applyMediaTransform();
-    });
+    }, {passive: true});
+    
+    window.addEventListener('touchmove', (e) => {
+      if (!panning || !panStart || mediaKind !== 'img') return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      panX = panStart.px + (touch.clientX - panStart.x);
+      panY = panStart.py + (touch.clientY - panStart.y);
+      applyMediaTransform();
+    }, {passive: false});
+    
     window.addEventListener('mouseup', () => {
       if (!panning) return;
       panning = false;
       if (imgEl) imgEl.style.cursor = 'grab';
       panStart = null;
-    });
+    }, {passive: true});
+    
+    window.addEventListener('touchend', () => {
+      if (!panning) return;
+      panning = false;
+      panStart = null;
+    }, {passive: true});
 
     modalBody.addEventListener('wheel', (e) => {
       if (mediaKind !== 'img') return;
@@ -604,59 +671,99 @@ printBtn.addEventListener('click', () => window.print());
 // Keyboard + Touch slide nav
 // =============================
 document.addEventListener('keydown', (e) => {
+  // Ignore if typing in input/select
+  if (e.target?.tagName === 'INPUT' || e.target?.tagName === 'SELECT' || e.target?.tagName === 'TEXTAREA') {
+    return;
+  }
+  
   // If modal/overlays open
   if (e.key === 'Escape') {
-    if (helpOpen) return closeHelpOverlay();
-    if (overviewOpen) return closeOverviewOverlay();
-    if (mediaModal.style.display === 'flex') return closeMedia();
+    if (helpOpen) { closeHelpOverlay(); return; }
+    if (overviewOpen) { closeOverviewOverlay(); return; }
+    if (mediaModal.style.display === 'flex') { closeMedia(); return; }
     // If nothing open, disable tools quickly
     if (laserEnabled) setLaser(false);
     if (penEnabled) setPen(false);
     return;
   }
 
-  if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') prev();
-  else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') next();
+  if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') { prev(); e.preventDefault(); }
+  else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') { next(); e.preventDefault(); }
   else if (e.key === ' ') { e.preventDefault(); next(); }
 
-  else if (e.key === 'o' || e.key === 'O') toggleOverview();
-  else if (e.key === 'p' || e.key === 'P') { notesEnabled = !notesEnabled; updateNotes(); setModeChip(); }
+  else if (e.key === 'o' || e.key === 'O') { toggleOverview(); e.preventDefault(); }
+  else if (e.key === 'p' || e.key === 'P') { notesEnabled = !notesEnabled; updateNotes(); setModeChip(); e.preventDefault(); }
 
-  else if (e.key === 'l' || e.key === 'L') setLaser(!laserEnabled);
-  else if (e.key === 'r' || e.key === 'R') setPen(!penEnabled);
-  else if (e.key === 'c' || e.key === 'C') clearDrawing();
+  else if (e.key === 'l' || e.key === 'L') { setLaser(!laserEnabled); e.preventDefault(); }
+  else if (e.key === 'r' || e.key === 'R') { setPen(!penEnabled); e.preventDefault(); }
+  else if (e.key === 'c' || e.key === 'C') { clearDrawing(); e.preventDefault(); }
 
-  else if (e.key === 'f' || e.key === 'F') toggleFullscreen();
-  else if (e.key === 'm' || e.key === 'M') toggleDark();
+  else if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); e.preventDefault(); }
+  else if (e.key === 'm' || e.key === 'M') { toggleDark(); e.preventDefault(); }
 
-  else if (e.key === 't' || e.key === 'T') toggleAutoplay();
+  else if (e.key === 't' || e.key === 'T') { toggleAutoplay(); e.preventDefault(); }
 
-  else if (e.key === '?' ) toggleHelp();
-  else if (e.key === '+' || e.key === '=') zoomIn();
-  else if (e.key === '-' || e.key === '_') zoomOut();
-});
+  else if (e.key === '?') { toggleHelp(); e.preventDefault(); }
+  else if (e.key === '+' || e.key === '=') { zoomIn(); e.preventDefault(); }
+  else if (e.key === '-' || e.key === '_') { zoomOut(); e.preventDefault(); }
+}, {passive: false});
 
 // Touch/swipe for slides (on whole doc)
 let startX = 0;
+let startY = 0;
+let startTime = null;
+
 document.addEventListener('touchstart', (e) => {
-  if (penEnabled) return; // avoid conflict
+  if (penEnabled || helpOpen || overviewOpen || mediaModal.style.display === 'flex') return;
   startX = e.touches[0].clientX;
+  startY = e.touches[0].clientY;
+  startTime = Date.now();
 }, {passive:true});
+
 document.addEventListener('touchend', (e) => {
-  if (!startX) return;
-  if (penEnabled) return;
+  if (!startX || !startY) return;
+  if (penEnabled || helpOpen || overviewOpen || mediaModal.style.display === 'flex') return;
+  
   const endX = e.changedTouches[0].clientX;
-  const diff = startX - endX;
-  if (Math.abs(diff) > 50) diff > 0 ? next() : prev();
+  const endY = e.changedTouches[0].clientY;
+  const deltaX = startX - endX;
+  const deltaY = startY - endY;
+  const duration = Date.now() - startTime;
+  
+  // Only register as swipe if primarily horizontal and quick
+  if (Math.abs(deltaX) > Math.abs(deltaY) * 2 && Math.abs(deltaX) > 40 && duration < 500) {
+    if (deltaX > 0) next();      // swipe left -> next
+    else if (deltaX < 0) prev(); // swipe right -> prev
+  }
+  
   startX = 0;
+  startY = 0;
 }, {passive:true});
 
 // =============================
 // Init
 // =============================
 function init(){
+  // Prevent unwanted zoom on double-tap
+  document.addEventListener('touchstart', (e) => {
+    if (e.touches.length > 1) e.preventDefault();
+  }, {passive: false});
+  
+  // Prevent scroll on body (handle with modal overflow)
+  document.body.style.position = 'fixed';
+  document.body.style.width = '100%';
+  document.body.style.height = '100%';
+  
+  // Prevent iOS Safari from zooming on input focus
+  if (IS_MOBILE) {
+    document.addEventListener('touchmove', (e) => {
+      if (!penEnabled) e.preventDefault();
+    }, {passive: false});
+  }
+  
   resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('resize', resizeCanvas, {passive: true});
+  window.addEventListener('orientationchange', resizeCanvas, {passive: true});
 
   buildJumpMenu();
   readHash();
@@ -669,6 +776,20 @@ function init(){
 
   updateCalc();
   setModeChip();
+  
+  // Log device info for debugging
+  if (window.location.hash === '#debug') {
+    console.log('Device Info:', {
+      isTouchDevice: IS_TOUCH_DEVICE(),
+      isWindows: IS_WINDOWS,
+      isMobile: IS_MOBILE,
+      userAgent: navigator.userAgent,
+      maxTouchPoints: navigator.maxTouchPoints || 0,
+      screenWidth: window.innerWidth,
+      screenHeight: window.innerHeight,
+      dpr: window.devicePixelRatio
+    });
+  }
 }
 
 init();
