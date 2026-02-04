@@ -102,21 +102,6 @@ const resetZoomBtn = document.getElementById('resetZoomBtn');
 
 const openPdfBtn = document.getElementById('openPdfBtn');
 
-// Slide 10 mini-widget
-const vOut = document.getElementById('vOut');
-const iOut = document.getElementById('iOut');
-const eta = document.getElementById('eta');
-const pLim = document.getElementById('pLim');
-
-const vOutLbl = document.getElementById('vOutLbl');
-const iOutLbl = document.getElementById('iOutLbl');
-const etaLbl = document.getElementById('etaLbl');
-const pLimLbl = document.getElementById('pLimLbl');
-
-const pOutVal = document.getElementById('pOutVal');
-const pInVal = document.getElementById('pInVal');
-const pLossVal = document.getElementById('pLossVal');
-
 // =============================
 // Helpers
 // =============================
@@ -614,34 +599,6 @@ jumpSelect.addEventListener('change', () => {
 });
 
 // =============================
-// Live mini-widget logic
-// =============================
-function updateCalc(){
-  if (!vOut || !iOut || !eta || !pLim) return;
-
-  const V = Number(vOut.value);
-  const I = Number(iOut.value);
-  const E = Number(eta.value) / 100;
-  const limit = Number(pLim.value);
-
-  vOutLbl.textContent = V;
-  iOutLbl.textContent = I;
-  etaLbl.textContent = Math.round(E * 100);
-  pLimLbl.textContent = limit;
-
-  let Pout = V * I;
-  if (Pout > limit) Pout = limit;
-
-  const Pin = E > 0 ? (Pout / E) : 0;
-  const Ploss = Math.max(0, Pin - Pout);
-
-  pOutVal.textContent = Math.round(Pout);
-  pInVal.textContent = Math.round(Pin);
-  pLossVal.textContent = Math.round(Ploss);
-}
-[vOut,iOut,eta,pLim].forEach(el => el && el.addEventListener('input', updateCalc));
-
-// =============================
 // Buttons
 // =============================
 prevBtn.addEventListener('click', prev);
@@ -711,7 +668,6 @@ document.addEventListener('keydown', (e) => {
 // Touch/swipe for slides (on whole doc)
 let startX = 0;
 let startY = 0;
-let startTime = null;
 
 document.addEventListener('touchstart', (e) => {
   if (penEnabled || helpOpen || overviewOpen || mediaModal.style.display === 'flex') return;
@@ -774,7 +730,6 @@ function init(){
   timerTick = setInterval(tickTimer, 250);
   tickTimer();
 
-  updateCalc();
   setModeChip();
   
   // Log device info for debugging
@@ -793,3 +748,4 @@ function init(){
 }
 
 init();
+
