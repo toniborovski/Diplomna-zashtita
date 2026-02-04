@@ -4,18 +4,6 @@
 const TARGET_MINUTES = 12;              // timer goal (change to 10/15 as you want)
 const AUTOPLAY_SECONDS = 18;            // per slide during rehearsal
 const PEN_WIDTH = 4;                    // drawing thickness
-const IS_TOUCH_DEVICE = () => {
-  return (
-    (typeof window !== 'undefined' && 
-     typeof navigator !== 'undefined' &&
-     (navigator.maxTouchPoints > 0 || 
-      navigator.msMaxTouchPoints > 0 ||
-      ('ontouchstart' in window) ||
-      ('onmsgesturechange' in window)))
-  );
-};
-const IS_WINDOWS = /Windows/i.test(navigator.userAgent);
-const IS_MOBILE = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 // =============================
 // State
@@ -332,44 +320,28 @@ function clearDrawing(){
 }
 
 function pointerPos(e){
-  let x = 0, y = 0;
-  
-  if (e.clientX !== undefined && e.clientY !== undefined) {
-    x = e.clientX;
-    y = e.clientY;
-  } else if (e.touches && e.touches.length > 0) {
-    x = e.touches[0].clientX;
-    y = e.touches[0].clientY;
-  } else if (e.changedTouches && e.changedTouches.length > 0) {
-    x = e.changedTouches[0].clientX;
-    y = e.changedTouches[0].clientY;
-  } else if (e.pageX !== undefined && e.pageY !== undefined) {
-    x = e.pageX - window.scrollX;
-    y = e.pageY - window.scrollY;
-  }
-  
+  const x = e.clientX ?? 0;
+  const y = e.clientY ?? 0;
   return {x, y};
 }
 
-// Mouse/Pointer move for laser (exclude touch on mobile)
+// Mouse move for laser
 document.addEventListener('mousemove', (e) => {
-  if (!laserEnabled || IS_TOUCH_DEVICE()) return;
+  if (!laserEnabled) return;
   const {x,y} = pointerPos(e);
   laserDot.style.left = x + 'px';
   laserDot.style.top = y + 'px';
   laserDot.style.display = 'block';
-}, {passive: true});
+});
 
 // Pen drawing
 function startDraw(e){
   if (!penEnabled) return;
-  if (e.type.includes('touch')) e.preventDefault();
   drawing = true;
   lastPt = pointerPos(e);
 }
 function moveDraw(e){
   if (!penEnabled || !drawing) return;
-  if (e.type.includes('touch')) e.preventDefault();
   const pt = pointerPos(e);
   ctx.strokeStyle = 'rgba(255, 59, 48, 0.92)'; // red ink
   ctx.lineWidth = PEN_WIDTH;
@@ -379,28 +351,14 @@ function moveDraw(e){
   ctx.stroke();
   lastPt = pt;
 }
-function endDraw(e){
-  if (e && e.type.includes('touch')) e.preventDefault();
+function endDraw(){
   drawing = false;
   lastPt = null;
 }
 
-// Mouse drawing
-canvas.addEventListener('mousedown', startDraw, {passive: true});
-canvas.addEventListener('mousemove', moveDraw, {passive: true});
-window.addEventListener('mouseup', endDraw, {passive: true});
-
-// Touch drawing (high priority)
-canvas.addEventListener('touchstart', startDraw, {passive: false});
-canvas.addEventListener('touchmove', moveDraw, {passive: false});
-canvas.addEventListener('touchend', endDraw, {passive: false});
-
-// Pointer events (unified handling for Windows pen, mouse, and touch)
-if (window.PointerEvent) {
-  canvas.addEventListener('pointerdown', startDraw, {passive: false});
-  canvas.addEventListener('pointermove', moveDraw, {passive: false});
-  window.addEventListener('pointerup', endDraw, {passive: true});
-}
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', moveDraw);
+window.addEventListener('mouseup', endDraw);
 
 // =============================
 // Media modal (images / placeholders / pdf)
@@ -682,61 +640,12 @@ document.addEventListener('keydown', (e) => {
   else if (e.key === '-' || e.key === '_') { zoomOut(); e.preventDefault(); }
 }, {passive: false});
 
-// Touch/swipe for slides (on whole doc)
-let startX = 0;
-let startY = 0;
-
-document.addEventListener('touchstart', (e) => {
-  if (penEnabled || helpOpen || overviewOpen || mediaModal.style.display === 'flex') return;
-  startX = e.touches[0].clientX;
-  startY = e.touches[0].clientY;
-  startTime = Date.now();
-}, {passive:true});
-
-document.addEventListener('touchend', (e) => {
-  if (!startX || !startY) return;
-  if (penEnabled || helpOpen || overviewOpen || mediaModal.style.display === 'flex') return;
-  
-  const endX = e.changedTouches[0].clientX;
-  const endY = e.changedTouches[0].clientY;
-  const deltaX = startX - endX;
-  const deltaY = startY - endY;
-  const duration = Date.now() - startTime;
-  
-  // Only register as swipe if primarily horizontal and quick
-  if (Math.abs(deltaX) > Math.abs(deltaY) * 2 && Math.abs(deltaX) > 40 && duration < 500) {
-    if (deltaX > 0) next();      // swipe left -> next
-    else if (deltaX < 0) prev(); // swipe right -> prev
-  }
-  
-  startX = 0;
-  startY = 0;
-}, {passive:true});
-
 // =============================
 // Init
 // =============================
 function init(){
-  // Prevent unwanted zoom on double-tap
-  document.addEventListener('touchstart', (e) => {
-    if (e.touches.length > 1) e.preventDefault();
-  }, {passive: false});
-  
-  // Prevent scroll on body (handle with modal overflow)
-  document.body.style.position = 'fixed';
-  document.body.style.width = '100%';
-  document.body.style.height = '100%';
-  
-  // Prevent iOS Safari from zooming on input focus
-  if (IS_MOBILE) {
-    document.addEventListener('touchmove', (e) => {
-      if (!penEnabled) e.preventDefault();
-    }, {passive: false});
-  }
-  
   resizeCanvas();
-  window.addEventListener('resize', resizeCanvas, {passive: true});
-  window.addEventListener('orientationchange', resizeCanvas, {passive: true});
+  window.addEventListener('resize', resizeCanvas);
 
   buildJumpMenu();
   readHash();
@@ -748,20 +657,6 @@ function init(){
   tickTimer();
 
   setModeChip();
-  
-  // Log device info for debugging
-  if (window.location.hash === '#debug') {
-    console.log('Device Info:', {
-      isTouchDevice: IS_TOUCH_DEVICE(),
-      isWindows: IS_WINDOWS,
-      isMobile: IS_MOBILE,
-      userAgent: navigator.userAgent,
-      maxTouchPoints: navigator.maxTouchPoints || 0,
-      screenWidth: window.innerWidth,
-      screenHeight: window.innerHeight,
-      dpr: window.devicePixelRatio
-    });
-  }
 }
 
 init();
