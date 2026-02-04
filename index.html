@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Дипломна защита - 48V DC/DC Преобразувател</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Progress -->
+  <div class="progress"><div id="progressBar"></div></div>
+
+  <!-- Topbar: slide counter + timer -->
+  <div class="topbar">
+    <div class="left">
+      <div class="chip mono" id="slideCounter">1 / 15</div>
+      <div class="chip mono" id="timerChip">⏱ 00:00 / 12:00</div>
+      <div class="chip" id="autoChip" style="display:none;">▶ Auto</div>
+    </div>
+    <div class="right">
+      <div class="chip" id="modeChip">Mode: Normal</div>
+    </div>
+  </div>
+
+  <!-- Presenter notes -->
+  <div class="notes" id="notesBox">
+    <h4>Бележки (P)</h4>
+    <p id="notesText">—</p>
+  </div>
+
+  <!-- Laser dot -->
+  <div class="laser-dot" id="laserDot"></div>
+
+  <!-- Drawing canvas layer -->
+  <div class="layers">
+    <canvas id="drawCanvas"></canvas>
+  </div>
+
+  <!-- Slides -->
+  <div class="slide-container">
+
+    <!-- SLIDE 1 -->
+    <section class="slide active" data-slide="1" data-notes="10 сек: тема + какво прави системата. Премини бързо към целта.">
+      <div class="center-content">
+        <h1>ПРЕОБРАЗУВАТЕЛ ОТ СИСТЕМА ЗА<br>СЪХРАНЕНИЕ НА ЕНЕРГИЯ</h1>
+        <p style="font-size:1.6rem;font-weight:650;color:var(--text-secondary);margin-bottom:2rem;">
+          в хибриден автомобил
+        </p>
+        <p style="font-size:1.4rem;font-weight:900;">ТОНИ ЦОЧЕВ БОРОВСКИ</p>
+        <p style="font-size:1.2rem;color:var(--text-secondary);">Факултетен № 901322008</p>
+        <p style="font-size:1.1rem;color:var(--text-secondary);">Катедра „Силова електроника“ • 2026</p>
+      </div>
+    </section>
+
+    <!-- SLIDE 2 -->
+    <section class="slide" data-slide="2" data-notes="Цел + 3 задачи. Без детайли. Подчертай 48/24V, 1kW, interleaved, bidirectional."
+      data-section="Въведение">
+      <h2>ЦЕЛ И ЗАДАЧИ</h2>
+      <div class="content-grid">
+        <div class="content-left">
+          <h3>Основна цел:</h3>
+          <ul>
+            <li>Проектиране на <span class="highlight">48V/24V, 1 kW</span> interleaved bidirectional DC/DC преобразувател</li>
+            <li>Като част от <span class="highlight">HESS</span> (Hybrid Energy Storage System) в 48V mild-hybrid автомобил</li>
+          </ul>
+          <h3 style="margin-top:2rem;">Основни задачи:</h3>
+          <ul>
+            <li>Избор на топология, контролер и микроконтролер</li>
+            <li>Оразмеряване на силовата схема</li>
+            <li>Симулационни изследвания и анализ</li>
+          </ul>
+        </div>
+        <div class="image-placeholder zoomable" data-title="Блок-схема на HESS" data-kind="placeholder">
+          <h4>Тук постави блок-схема на HESS системата</h4>
+          <p>Фигура от дипломната работа</p>
+          <small>(клик за zoom)</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 3 -->
+    <section class="slide" data-slide="3" data-notes="Защо 48V: регулации, SELV, по-малки загуби в кабели, повече мощност за помощни системи."
+      data-section="Контекст">
+      <h2>АКТУАЛНОСТ НА 48V СИСТЕМИТЕ</h2>
+      <div class="content-grid">
+        <div>
+          <ul>
+            <li><span class="highlight">EURO 6/7 и CAFE</span> изисквания за CO₂ емисии</li>
+            <li>48V mild-hybrid системи с мощност <span class="highlight">15-20 kW</span></li>
+            <li>Диапазон <span class="highlight">&lt;60V DC</span> - попада в SELV категория</li>
+            <li>Намалени загуби в кабелните снопове спрямо 12V</li>
+            <li>Поддръжка на електрически спомагателни системи</li>
+          </ul>
+        </div>
+        <div class="image-placeholder zoomable" data-title="Zonal архитектура 12V vs 48V" data-kind="placeholder">
+          <h4>Zonal архитектура 12V vs 48V</h4>
+          <p>Фигура 2 от дипломната работа</p>
+          <small>(клик за zoom)</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 4 -->
+    <section class="slide" data-slide="4" data-notes="Какво е HESS: батерия + суперкондензатор. Подчертай параметрите (24V/375F, ESR)."
+      data-section="HESS">
+      <h2>HYBRID ENERGY STORAGE SYSTEM (HESS)</h2>
+      <div class="content-grid">
+        <div>
+          <h3>Суперкондензаторен блок:</h3>
+          <ul>
+            <li><span class="highlight">24V / 375F</span> (9x 2.7V елемента в серия)</li>
+            <li>Енергия: <span class="highlight">26.7 Wh</span></li>
+            <li>CC заряд при 45A: <span class="highlight">2.2 минути</span></li>
+            <li>ESR: <span class="highlight">2.1 mΩ</span> при 200 kHz</li>
+          </ul>
+        </div>
+        <div class="image-placeholder zoomable" data-title="Блок-схема на задвижваща система" data-kind="placeholder">
+          <h4>Блок-схема на задвижваща система</h4>
+          <p>Фигура 5/6 от дипломната работа</p>
+          <small>(клик за zoom)</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 5 -->
+    <section class="slide" data-slide="5" data-notes="Сравнение топологии: защо interleaved buck-boost печели (КПД, ripple, токове)."
+      data-section="Топология">
+      <h2>СРАВНЕНИЕ НА DC/DC ТОПЛОГИИ</h2>
+      <div class="stats-grid">
+        <div class="stat-card"><span class="stat-value">95-98%</span><span class="stat-label">Interleaved Buck-Boost</span></div>
+        <div class="stat-card"><span class="stat-value">93-97%</span><span class="stat-label">4-switch Buck-Boost</span></div>
+        <div class="stat-card"><span class="stat-value">88-94%</span><span class="stat-label">SEPIC / Zeta / Ćuk</span></div>
+        <div class="stat-card"><span class="stat-value">✓</span><span class="stat-label">ИЗБРАНА ТОПЛОГИЯ</span></div>
+      </div>
+      <div class="image-placeholder zoomable" data-title="Схеми на топологиите (Фиг. 12–19)" data-kind="placeholder" style="margin-top:2rem;height:200px;">
+        <h4>Схеми на топологиите</h4>
+        <p>Фигури 12-19 от дипломната работа</p>
+        <small>(клик за zoom)</small>
+      </div>
+    </section>
+
+    <!-- SLIDE 6 -->
+    <section class="slide" data-slide="6" data-notes="Interleaved: 2 фази 180°, по-ниски пулсации, 500W/канал, 200–400kHz."
+      data-section="Топология">
+      <h2>INTERLEAVED BIDIRECTIONAL BUCK-BOOST</h2>
+      <div class="content-grid">
+        <div>
+          <ul>
+            <li><span class="highlight">48V ↔ 24V</span>, 1 kW (500W на канал)</li>
+            <li>Два канала с <span class="highlight">180°</span> фазова разлика</li>
+            <li>Честота: <span class="highlight">200-400 kHz</span></li>
+            <li>ISO 21780 съвместимост</li>
+            <li>Минимални пулсации на вход/изход</li>
+          </ul>
+        </div>
+        <div class="image-placeholder zoomable" data-title="Схема на топологията (Фиг. 26)" data-kind="placeholder">
+          <h4>Схема на топологията</h4>
+          <p>Фигура 26 от дипломната работа</p>
+          <small>(клик за zoom)</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 7 -->
+    <section class="slide" data-slide="7" data-notes="LM5171-Q1: dual-channel, current-mode, I2C, DEM/FPWM, automotive диапазони."
+      data-section="Контролер">
+      <h2>УПРАВЛЯВАЩ КОНТРОЛЕР LM5171-Q1</h2>
+      <div class="content-grid">
+        <div>
+          <ul>
+            <li>Автомобилен квалифициран <span class="highlight">(ISO 21780)</span></li>
+            <li><span class="highlight">Dual-channel</span> buck/boost контролер</li>
+            <li>Average current mode control</li>
+            <li>DEM/FPWM, I²C интерфейс</li>
+            <li>HV: 80V, LV: 75V, <span class="highlight">-40..150°C</span></li>
+          </ul>
+        </div>
+        <div class="image-placeholder zoomable" data-title="Блок-схема LM5171 (Фиг. 32)" data-kind="placeholder">
+          <h4>Блок-схема LM5171</h4>
+          <p>Фигура 32 от дипломната работа</p>
+          <small>(клик за zoom)</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 8 -->
+    <section class="slide" data-slide="8" data-notes="STM32L552: PWM таймери, ADC+DMA, комуникации, low-power. За мониторинг и управление."
+      data-section="Контролер">
+      <h2>МИКРОКОНТРОЛЕР STM32L552</h2>
+      <div class="content-grid">
+        <div>
+          <ul>
+            <li>ARM Cortex-M33 <span class="highlight">TrustZone</span></li>
+            <li>TIM1/TIM8: комплементарни PWM <span class="highlight">200 kHz</span></li>
+            <li>ADC + DMA за мониторинг</li>
+            <li>Комуникация: CAN-FD, SPI, UART, I²C</li>
+            <li>Вътрешен SMPS, ниска консумация</li>
+          </ul>
+        </div>
+        <div class="image-placeholder zoomable" data-title="Пинаут STM32L552 (Фиг. 38)" data-kind="placeholder">
+          <h4>Пинаут STM32L552</h4>
+          <p>Фигура 38 от дипломната работа</p>
+          <small>(клик за zoom)</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 9 -->
+    <section class="slide" data-slide="9" data-notes="Пълна силова схема: портове HV/LV, MOSFET-и, сензори, ключови елементи."
+      data-section="Схема">
+      <h2>ПЪЛНА СИЛОВА СХЕМА</h2>
+      <div style="height:70%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div class="image-placeholder zoomable" data-title="Пълна силова схема (Фиг. 37)" data-kind="placeholder" style="height:500px;width:80%;">
+          <h4 style="font-size:1.3rem;">Пълна силова схема с LM5171 и MOSFETs</h4>
+          <p>Фигура 37 от дипломната работа</p>
+          <p style="margin-top:1rem;font-size:1.1rem;">
+            HV порт: 48-52V | LV порт: 24V/375F | MOSFET: Si7336ADP
+          </p>
+          <small>(клик за zoom)</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 10 -->
+    <section class="slide" data-slide="10" data-notes="Параметри + мини-калкулатор (по желание): покажи P=V·I и груба оценка на загуби."
+      data-section="Параметри">
+      <h2>ОСНОВНИ ПАРАМЕТРИ</h2>
+      <div class="stats-grid">
+        <div class="stat-card"><span class="stat-value">48V ↔ 24V</span><span class="stat-label">Напрежения</span></div>
+        <div class="stat-card"><span class="stat-value">1 kW</span><span class="stat-label">Мощност</span></div>
+        <div class="stat-card"><span class="stat-value">95-98%</span><span class="stat-label">КПД</span></div>
+        <div class="stat-card"><span class="stat-value">200 kHz</span><span class="stat-label">Честота</span></div>
+        <div class="stat-card"><span class="stat-value">4.7 μH</span><span class="stat-label">Индуктивност</span></div>
+        <div class="stat-card"><span class="stat-value">&lt;90°C</span><span class="stat-label">MOSFET Tj</span></div>
+      </div>
+
+      <!-- Live mini-widget -->
+      <div class="widget" id="calcWidget" style="margin-top:22px;">
+        <h3 style="margin-bottom:10px;">Live mini-калкулатор (за демонстрация)</h3>
+        <div class="row">
+          <div>
+            <label>Изходно напрежение (Vlv) <span class="highlight" id="vOutLbl">24</span> V</label>
+            <input type="range" id="vOut" min="18" max="30" value="24" step="1" />
+          </div>
+          <div>
+            <label>Товарен ток (Ilv) <span class="highlight" id="iOutLbl">40</span> A</label>
+            <input type="range" id="iOut" min="0" max="60" value="40" step="1" />
+          </div>
+        </div>
+        <div class="row" style="margin-top:12px;">
+          <div>
+            <label>КПД <span class="highlight" id="etaLbl">95</span> %</label>
+            <input type="range" id="eta" min="88" max="99" value="95" step="1" />
+          </div>
+          <div>
+            <label>Целева мощност (лимит) <span class="highlight" id="pLimLbl">1000</span> W</label>
+            <input type="range" id="pLim" min="200" max="1200" value="1000" step="50" />
+          </div>
+        </div>
+        <div class="out">
+          <div class="pill">Pout: <span id="pOutVal">960</span> W</div>
+          <div class="pill">Pin: <span id="pInVal">1011</span> W</div>
+          <div class="pill">Ploss: <span id="pLossVal">51</span> W</div>
+        </div>
+        <p style="margin-top:10px;color:var(--text-secondary);font-weight:650;font-size:1.05rem;">
+          *Калкулаторът е за “live” показване на зависимости. Реалните стойности са от WEBENCH/симулации.
+        </p>
+      </div>
+    </section>
+
+    <!-- SLIDE 11 -->
+    <section class="slide" data-slide="11" data-notes="WEBENCH: загуби, кое доминира, IRMS. Сравни с целевия КПД."
+      data-section="Резултати">
+      <h2>TI WEBENCH РЕЗУЛТАТИ</h2>
+      <div class="content-grid">
+        <div>
+          <h3>Загуби при 1 kW:</h3>
+          <ul>
+            <li>Обща мощност на загубите: <span class="highlight">90 W</span></li>
+            <li>MOSFET загуби: <span class="highlight">5.4 W</span></li>
+            <li>Индуктор: <span class="highlight">2.5 W</span></li>
+            <li>Капацити: <span class="highlight">9 W</span> (ESR)</li>
+            <li>Cin/Cout IRMS: <span class="highlight">17.7 A</span></li>
+          </ul>
+        </div>
+        <div class="image-placeholder zoomable" data-title="WEBENCH таблица и графики" data-kind="placeholder">
+          <h4>WEBENCH таблица и графики</h4>
+          <p>Резултати от V.3 в дипломната</p>
+          <small>(клик за zoom)</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 12 -->
+    <section class="slide" data-slide="12" data-notes="LTspice: базов модел без управление. Показва токове и напрежения за проверка."
+      data-section="Резултати">
+      <h2>LTSPICE СИМУЛАЦИИ</h2>
+      <div class="content-grid">
+        <div>
+          <h3>Без управление (10ms):</h3>
+          <ul>
+            <li>L1=L2= <span class="highlight">10 μH</span></li>
+            <li>R3=0.001Ω за измерване</li>
+            <li>Измерени: IR1, IR2, IRload</li>
+            <li>Vhv, Vlv напрежения</li>
+          </ul>
+        </div>
+        <div class="image-placeholder zoomable" data-title="LTspice схема и вълнови форми (Фиг. 54–56)" data-kind="placeholder">
+          <h4>LTspice схема и вълнови форми</h4>
+          <p>Фигури 54-56 от дипломната</p>
+          <small>(клик за zoom)</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 13 -->
+    <section class="slide" data-slide="13" data-notes="PSpice с LM5171: interleaving 60–420°, токове през L1/L2. Сравни с очакваното."
+      data-section="Резултати">
+      <h2>PSPICE + LM5171</h2>
+      <div class="content-grid">
+        <div>
+          <h3>С LM5171-Q1 (14.84ms):</h3>
+          <ul>
+            <li>L1=L2= <span class="highlight">4.7 μH</span></li>
+            <li>MOSFET: Si7336ADP</li>
+            <li>Interleaving: <span class="highlight">60-420°</span></li>
+            <li>Измерени токове през L1/L2</li>
+          </ul>
+        </div>
+        <div class="image-placeholder zoomable" data-title="PSpice схема и резултати (Фиг. 57–62)" data-kind="placeholder">
+          <h4>PSpice схема и резултати</h4>
+          <p>Фигури 57-62 от дипломната</p>
+          <small>(клик за zoom)</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- SLIDE 14 -->
+    <section class="slide" data-slide="14" data-notes="Заключение: 4 булета. 20–30 секунди. После Q&A."
+      data-section="Финал">
+      <div class="center-content">
+        <h2 style="margin-bottom:3rem;">ЗАКЛЮЧЕНИЕ</h2>
+        <ul style="max-width:800px;text-align:left;">
+          <li><span class="highlight">✓</span> Проектиран 1 kW interleaved 48V/24V DC/DC преобразувател за HESS</li>
+          <li><span class="highlight">✓</span> КПД 95-98%, MOSFET Tj &lt; 90°C, ниски пулсации</li>
+          <li><span class="highlight">✓</span> LM5171-Q1 и STM32L552 - автомобилни стандарти</li>
+          <li><span class="highlight">✓</span> Верифициран чрез LTspice, PSpice, WEBENCH симулации</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SLIDE 15 -->
+    <section class="slide" data-slide="15" data-notes="Благодарности. Ако има време: предложи бъдеща работа/хардуер реализация."
+      data-section="Финал">
+      <div class="center-content">
+        <h1 style="font-size:3rem;margin-bottom:2rem;color:var(--accent-primary);">БЛАГОДАРЯ!</h1>
+        <p style="font-size:1.6rem;margin-bottom:1rem;">за вниманието</p>
+        <p style="font-size:1.4rem;color:var(--text-secondary);">Въпроси?</p>
+
+        <!-- Example: PDF open button (embedded viewer) -->
+        <button class="nav-btn nav-ghost" id="openPdfBtn" style="margin-top:22px;">
+          Отвори PDF (пример)
+        </button>
+        <p style="margin-top:10px;color:var(--text-secondary);font-weight:650;font-size:1.05rem;">
+          *Сложи твоя линк като <span class="highlight">data-pdf</span> (виж JS) или смени URL-а.
+        </p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Bottom nav -->
+  <div class="nav">
+    <button class="nav-btn" id="prevBtn" disabled>◀</button>
+    <button class="nav-btn" id="nextBtn">▶</button>
+
+    <button class="nav-btn nav-ghost" id="overviewBtn">Overview</button>
+    <button class="nav-btn nav-ghost" id="notesBtn">Notes</button>
+
+    <button class="nav-btn nav-ghost" id="laserBtn">Laser</button>
+    <button class="nav-btn nav-ghost" id="penBtn">Pen</button>
+    <button class="nav-btn nav-ghost" id="clearBtn">Clear</button>
+
+    <button class="nav-btn nav-ghost" id="fsBtn">Full</button>
+    <button class="nav-btn nav-ghost" id="darkBtn">Dark</button>
+
+    <button class="nav-btn nav-ghost" id="autoBtn">Auto</button>
+    <button class="nav-btn nav-ghost" id="printBtn">Print</button>
+
+    <select class="jump" id="jumpSelect" title="Скок към секция/слайд"></select>
+
+    <button class="nav-btn nav-ghost" id="helpBtn">?</button>
+  </div>
+
+  <!-- Help overlay -->
+  <div class="overlay" id="helpOverlay">
+    <div class="panel">
+      <div class="row">
+        <h3>Клавиши и режими</h3>
+        <button class="icon-btn" id="closeHelp">Close</button>
+      </div>
+      <div class="grid">
+        <div class="kbd"><code>← / A</code><div>Предишен слайд</div></div>
+        <div class="kbd"><code>→ / D / Space</code><div>Следващ слайд</div></div>
+        <div class="kbd"><code>#7</code><div>Директно към слайд (hash навигация)</div></div>
+        <div class="kbd"><code>O</code><div>Overview (миниатюри)</div></div>
+        <div class="kbd"><code>P</code><div>Presenter notes</div></div>
+        <div class="kbd"><code>L</code><div>Laser pointer</div></div>
+        <div class="kbd"><code>R</code><div>Pen (рисуване)</div></div>
+        <div class="kbd"><code>C</code><div>Clear рисунки</div></div>
+        <div class="kbd"><code>F</code><div>Fullscreen</div></div>
+        <div class="kbd"><code>M</code><div>Dark mode</div></div>
+        <div class="kbd"><code>T</code><div>Auto-play (репетиция)</div></div>
+        <div class="kbd"><code>Esc</code><div>Затваря overlay/modals</div></div>
+        <div class="kbd"><code>Enter</code><div>Zoom върху избран placeholder (ако е фокусиран)</div></div>
+      </div>
+      <p style="margin-top:12px;color:var(--text-secondary);font-weight:650;">
+        Съвет: За истински фигури сложи <b>data-img="assets/fig26.png"</b> на .zoomable блоковете.
+      </p>
+    </div>
+  </div>
+
+  <!-- Overview overlay -->
+  <div class="overlay" id="overviewOverlay">
+    <div class="panel">
+      <div class="row">
+        <h3>Overview</h3>
+        <button class="icon-btn" id="closeOverview">Close</button>
+      </div>
+      <div class="overview-grid" id="overviewGrid"></div>
+    </div>
+  </div>
+
+  <!-- Image/PDF modal -->
+  <div class="modal" id="mediaModal">
+    <div class="modal-card">
+      <div class="modal-top">
+        <div class="modal-title" id="modalTitle">Viewer</div>
+        <div class="modal-actions">
+          <button class="icon-btn" id="zoomOutBtn">−</button>
+          <button class="icon-btn" id="zoomInBtn">＋</button>
+          <button class="icon-btn" id="resetZoomBtn">Reset</button>
+          <button class="icon-btn" id="closeModalBtn">Close</button>
+        </div>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
