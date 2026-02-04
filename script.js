@@ -101,6 +101,8 @@ const zoomOutBtn = document.getElementById('zoomOutBtn');
 const resetZoomBtn = document.getElementById('resetZoomBtn');
 
 const openPdfBtn = document.getElementById('openPdfBtn');
+const toggleToolbarBtn = document.getElementById('toggleToolbarBtn');
+const nav = document.querySelector('.nav');
 
 // =============================
 // Helpers
@@ -623,6 +625,21 @@ darkBtn.addEventListener('click', toggleDark);
 
 autoBtn.addEventListener('click', toggleAutoplay);
 printBtn.addEventListener('click', () => window.print());
+
+// Toggle toolbar visibility
+let toolbarHidden = false;
+toggleToolbarBtn.addEventListener('click', () => {
+  toolbarHidden = !toolbarHidden;
+  if (toolbarHidden) {
+    nav.classList.add('hidden');
+    toggleToolbarBtn.textContent = '+';
+    toggleToolbarBtn.title = 'Show toolbar';
+  } else {
+    nav.classList.remove('hidden');
+    toggleToolbarBtn.textContent = '−';
+    toggleToolbarBtn.title = 'Hide toolbar';
+  }
+});
 
 // =============================
 // Keyboard + Touch slide nav
