@@ -552,14 +552,7 @@ document.querySelectorAll('.zoomable').forEach(el => {
 });
 
 // Example PDF open (replace with your real PDF URL or local file)
-openPdfBtn.addEventListener('click', () => {
-  // If you have a local file: set url to "thesis.pdf" (must be in same folder)
-  // Note: some browsers restrict file:// if not served via local server.
-  openPdfViewer({
-    title: 'Дипломна работа - Тони Боровски',
-    url: 'assets/diplom_final.pdf'
-  });
-});
+// `openPdfBtn` is now a direct link; no embedded click handler needed.
 
 closeModalBtn.addEventListener('click', closeMedia);
 zoomInBtn.addEventListener('click', zoomIn);
