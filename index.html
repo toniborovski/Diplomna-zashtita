@@ -48,146 +48,163 @@
     <!-- SLIDE 1 -->
     <section class="slide active" data-slide="1" data-notes="10 сек: тема + какво прави системата. Премини бързо към целта.">
       <div class="center-content">
-        <h1>ПРЕОБРАЗУВАТЕЛ ОТ СИСТЕМА ЗА<br>СЪХРАНЕНИЕ НА ЕНЕРГИЯ</h1>
-        <p style="font-size:1.6rem;font-weight:650;color:var(--text-secondary);margin-bottom:2rem;">
-          в хибриден автомобил
-        </p>
+        <h1>ПРЕОБРАЗУВАТЕЛ ОТ СИСТЕМА ЗА<br>СЪХРАНЕНИЕ НА ЕНЕРГИЯ <br>В ХИБРИДЕН АВТОМОБИЛ</h1>
         <p style="font-size:1.4rem;font-weight:900;">ТОНИ ЦОЧЕВ БОРОВСКИ</p>
         <p style="font-size:1.2rem;color:var(--text-secondary);">Факултетен № 901322008</p>
         <p style="font-size:1.1rem;color:var(--text-secondary);">Катедра „Силова електроника“ • 2026</p>
       </div>
     </section>
 
-    <!-- SLIDE 2 -->
-    <section class="slide" data-slide="2" data-notes="Цел + 3 задачи. Без детайли. Подчертай 48/24V, 1kW, interleaved, bidirectional."
-      data-section="Въведение">
-      <h2>ЦЕЛ И ЗАДАЧИ</h2>
-      <div class="content-grid">
-        <div class="content-left">
-          <h3>Основна цел:</h3>
-          <ul>
-            <li>Проектиране на <span class="highlight">48V/24V, 1 kW</span> interleaved bidirectional DC/DC преобразувател</li>
-            <li>Като част от <span class="highlight">HESS</span> (Hybrid Energy Storage System) в 48V mild-hybrid автомобил</li>
-          </ul>
-          <h3 style="margin-top:2rem;">Основни задачи:</h3>
-          <ul>
-            <li>Избор на топология, контролер и микроконтролер</li>
-            <li>Оразмеряване на силовата схема</li>
-            <li>Симулационни изследвания и анализ</li>
-          </ul>
-        </div>
-        <div class="image-placeholder zoomable" data-title="Блок-схема на HESS" data-kind="placeholder">
-          <h4>Тук постави блок-схема на HESS системата</h4>
-          <p>Фигура от дипломната работа</p>
-          <small>(клик за zoom)</small>
-        </div>
-      </div>
-    </section>
+<!-- SLIDE 2 -->
+<section class="slide" data-slide="2" data-notes="Цел + 3 задачи. Без детайли. Подчертай 48/24V, 1kW, interleaved, bidirectional."
+  data-section="Въведение">
+  <h2>ЦЕЛ И ЗАДАЧИ</h2>
+  <div class="content-grid">
+    <div class="content-left">
+      <h3>Основна цел:</h3>
+      <ul>
+        <li>Проектиране на <span class="highlight">48V/24V, 1 kW</span> DC/DC преобразувател</li>
+        <li>Като част от <span class="highlight">HESS</span> (Hybrid Energy Storage System) в 48V mild-hybrid автомобил</li>
+      </ul>
+      <h3 style="margin-top:2rem;">Основни задачи:</h3>
+      <ul>
+        <li>Избор на топология, контролер и микроконтролер</li>
+        <li>Оразмеряване на силовата схема</li>
+        <li>Симулационни изследвания и анализ</li>
+      </ul>
+    </div>
+    <div class="zoomable custom-slide-image-container" data-title="Блок-схема на HESS" data-img="assets/Hybrid_SYSTEMS_1.png">
+        <img src="assets/Hybrid_SYSTEMS_1.png" alt="Блок-схема на HESS" class="custom-slide-image">
+    </div>
+    
+  </div>
+</section>
 
-    <!-- SLIDE 3 -->
-    <section class="slide" data-slide="3" data-notes="Защо 48V: регулации, SELV, по-малки загуби в кабели, повече мощност за помощни системи."
-      data-section="Контекст">
-      <h2>АКТУАЛНОСТ НА 48V СИСТЕМИТЕ</h2>
-      <div class="content-grid">
-        <div>
-          <ul>
-            <li><span class="highlight">EURO 6/7 и CAFE</span> изисквания за CO₂ емисии</li>
-            <li>48V mild-hybrid системи с мощност <span class="highlight">15-20 kW</span></li>
-            <li>Диапазон <span class="highlight">&lt;60V DC</span> - попада в SELV категория</li>
-            <li>Намалени загуби в кабелните снопове спрямо 12V</li>
-            <li>Поддръжка на електрически спомагателни системи</li>
-          </ul>
-        </div>
-        <div class="image-placeholder zoomable" data-title="Zonal архитектура 12V vs 48V" data-kind="placeholder">
-          <h4>Zonal архитектура 12V vs 48V</h4>
-          <p>Фигура 2 от дипломната работа</p>
-          <small>(клик за zoom)</small>
-        </div>
-      </div>
-    </section>
 
-    <!-- SLIDE 4 -->
-    <section class="slide" data-slide="4" data-notes="Какво е HESS: батерия + суперкондензатор. Подчертай параметрите (24V/375F, ESR)."
-      data-section="HESS">
-      <h2>HYBRID ENERGY STORAGE SYSTEM (HESS)</h2>
-      <div class="content-grid">
-        <div>
-          <h3>Суперкондензаторен блок:</h3>
-          <ul>
-            <li><span class="highlight">24V / 375F</span> (9x 2.7V елемента в серия)</li>
-            <li>Енергия: <span class="highlight">26.7 Wh</span></li>
-            <li>CC заряд при 45A: <span class="highlight">2.2 минути</span></li>
-            <li>ESR: <span class="highlight">2.1 mΩ</span> при 200 kHz</li>
-          </ul>
-        </div>
-        <div class="image-placeholder zoomable" data-title="Блок-схема на задвижваща система" data-kind="placeholder">
-          <h4>Блок-схема на задвижваща система</h4>
-          <p>Фигура 5/6 от дипломната работа</p>
-          <small>(клик за zoom)</small>
-        </div>
-      </div>
-    </section>
 
-    <!-- SLIDE 5 -->
-    <section class="slide" data-slide="5" data-notes="Сравнение топологии: защо interleaved buck-boost печели (КПД, ripple, токове)."
-      data-section="Топология">
-      <h2>СРАВНЕНИЕ НА DC/DC ТОПЛОГИИ</h2>
-      <div class="stats-grid">
-        <div class="stat-card"><span class="stat-value">95-98%</span><span class="stat-label">Interleaved Buck-Boost</span></div>
-        <div class="stat-card"><span class="stat-value">93-97%</span><span class="stat-label">4-switch Buck-Boost</span></div>
-        <div class="stat-card"><span class="stat-value">88-94%</span><span class="stat-label">SEPIC / Zeta / Ćuk</span></div>
-        <div class="stat-card"><span class="stat-value">✓</span><span class="stat-label">ИЗБРАНА ТОПЛОГИЯ</span></div>
-      </div>
-      <div class="image-placeholder zoomable" data-title="Схеми на топологиите (Фиг. 12–19)" data-kind="placeholder" style="margin-top:2rem;height:200px;">
-        <h4>Схеми на топологиите</h4>
-        <p>Фигури 12-19 от дипломната работа</p>
-        <small>(клик за zoom)</small>
-      </div>
-    </section>
+  <!-- SLIDE 3 -->
+<section class="slide" data-slide="3"
+  data-notes="48V като компромис между мощност, безопасност и ефективност. Защо не 12V и защо още не HV."
+  data-section="Контекст">
 
-    <!-- SLIDE 6 -->
-    <section class="slide" data-slide="6" data-notes="Interleaved: 2 фази 180°, по-ниски пулсации, 500W/канал, 200–400kHz."
-      data-section="Топология">
-      <h2>INTERLEAVED BIDIRECTIONAL BUCK-BOOST</h2>
-      <div class="content-grid">
-        <div>
-          <ul>
-            <li><span class="highlight">48V ↔ 24V</span>, 1 kW (500W на канал)</li>
-            <li>Два канала с <span class="highlight">180°</span> фазова разлика</li>
-            <li>Честота: <span class="highlight">200-400 kHz</span></li>
-            <li>ISO 21780 съвместимост</li>
-            <li>Минимални пулсации на вход/изход</li>
-          </ul>
-        </div>
-        <div class="image-placeholder zoomable" data-title="Схема на топологията (Фиг. 26)" data-kind="placeholder">
-          <h4>Схема на топологията</h4>
-          <p>Фигура 26 от дипломната работа</p>
-          <small>(клик за zoom)</small>
-        </div>
-      </div>
-    </section>
+  <h2>ЗАЩО 48V В АВТОМОБИЛНИТЕ СИСТЕМИ</h2>
 
-    <!-- SLIDE 7 -->
-    <section class="slide" data-slide="7" data-notes="LM5171-Q1: dual-channel, current-mode, I2C, DEM/FPWM, automotive диапазони."
-      data-section="Контролер">
-      <h2>УПРАВЛЯВАЩ КОНТРОЛЕР LM5171-Q1</h2>
-      <div class="content-grid">
-        <div>
-          <ul>
-            <li>Автомобилен квалифициран <span class="highlight">(ISO 21780)</span></li>
-            <li><span class="highlight">Dual-channel</span> buck/boost контролер</li>
-            <li>Average current mode control</li>
-            <li>DEM/FPWM, I²C интерфейс</li>
-            <li>HV: 80V, LV: 75V, <span class="highlight">-40..150°C</span></li>
-          </ul>
-        </div>
-        <div class="image-placeholder zoomable" data-title="Блок-схема LM5171 (Фиг. 32)" data-kind="placeholder">
-          <h4>Блок-схема LM5171</h4>
-          <p>Фигура 32 от дипломната работа</p>
-          <small>(клик за zoom)</small>
-        </div>
-      </div>
-    </section>
+  <div class="content-grid">
+    <div>
+      <ul>
+        <li>Ограниченията на <span class="highlight">12V</span> при нарастващи мощности</li>
+        <li><span class="highlight">48V</span> позволява kW-нива при разумни токове</li>
+        <li>По-ниски <span class="highlight">I²R загуби</span> и по-леки кабелни снопове</li>
+        <li>Диапазон <span class="highlight">&lt;60V DC</span> – безопасен за обслужване (SELV)</li>
+        <li>Подходящо напрежение за mild-hybrid и помощни електрически функции</li>
+      </ul>
+    </div>
+
+    <div class="zoomable custom-slide-image-container"
+         data-title="48V архитектура в mild-hybrid автомобил"
+         data-img="assets/Hybrid_SYSTEMS_2.png">
+      <img src="assets/Hybrid_SYSTEMS_2.png"
+           alt="48V архитектура в автомобила"
+           class="custom-slide-image">
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 4 -->
+<section class="slide" data-slide="4"
+  data-notes="HESS = батерия + суперкондензатор. Батерията дава енергия, SC поема пиковете. После числата."
+  data-section="HESS">
+
+  <h2>HYBRID ENERGY STORAGE SYSTEM (HESS)</h2>
+
+  <div class="content-grid">
+    <div>
+      <h3>Концепция:</h3>
+      <ul>
+        <li>Разделяне на <span class="highlight">енергийни</span> и <span class="highlight">мощностни</span> функции</li>
+        <li>Намаляване на натоварването и стареенето на батерията</li>
+        <li>Подходящо за динамични автомобилни режими</li>
+      </ul>
+
+      <h3 style="margin-top:1.5rem;">Суперкондензаторен модул:</h3>
+      <ul>
+        <li>Номинално напрежение: <span class="highlight">24 V</span></li>
+        <li>Капацитет: <span class="highlight">375 F</span> (9 × 2.7 V в серия)</li>
+        <li>Ниско вътрешно съпротивление: <span class="highlight">2.1 mΩ</span></li>
+      </ul>
+    </div>
+
+    <div class="zoomable custom-slide-image-container"
+         data-title="Блок-схема на Hybrid Energy Storage System"
+         data-img="assets\Energy_sotorage_1.png">
+      <img src="assets\Energy_sotorage_1.png"
+           alt="Блок-схема на HESS"
+           class="custom-slide-image">
+    </div>
+  </div>
+</section>
+
+
+<!-- SLIDE 5 -->
+<section class="slide" data-slide="5"
+  data-notes="Първо – защо interleaved. После – как работи: 2 фази, 180°, по-нисък ripple, bidirectional."
+  data-section="Топология">
+
+  <h2>INTERLEAVED BIDIRECTIONAL BUCK-BOOST</h2>
+
+  <div class="content-grid">
+    <div>
+      <ul>
+        <li>Сравнение на основни <span class="highlight">DC/DC топологии</span></li>
+        <li><span class="highlight">Interleaved buck-boost</span> – най-добър общ компромис</li>
+        <li>Два канала с <span class="highlight">180°</span> фазова разлика</li>
+        <li><span class="highlight">48V ↔ 24V</span>, 1 kW (500 W на канал)</li>
+        <li>По-ниски пулсации и равномерно разпределение на токовете</li>
+        <li>Подходяща за <span class="highlight">двупосочна</span> работа</li>
+      </ul>
+    </div>
+
+    <div class="zoomable custom-slide-image-container"
+         data-title="Interleaved bidirectional buck-boost схема (Фиг. 26)"
+         data-img="assets/Interleaved_1.png">
+      <img src="assets/Interleaved_1.png"
+           alt="Interleaved bidirectional buck-boost схема"
+           class="custom-slide-image">
+    </div>
+  </div>
+</section>
+
+
+   <!-- SLIDE 7 -->
+<section class="slide" data-slide="7"
+  data-notes="LM5171-Q1: dual-channel за interleaved, average current-mode, bidirectional, I2C/DEM/FPWM, automotive."
+  data-section="Контролер">
+
+  <h2>УПРАВЛЯВАЩ КОНТРОЛЕР LM5171-Q1</h2>
+
+  <div class="content-grid">
+    <div>
+      <ul>
+        <li>Автомобилно квалифициран контролер <span class="highlight">(AEC-Q100)</span></li>
+        <li><span class="highlight">Dual-channel</span> архитектура – директно за двуфазово управление</li>
+        <li><span class="highlight">Average current-mode</span> контрол (стабилно токово споделяне между фазите)</li>
+        <li>Поддръжка на <span class="highlight">двупосочен</span> режим (buck ↔ boost)</li>
+        <li>Режими <span class="highlight">DEM / FPWM</span> и конфигурация/диагностика през <span class="highlight">I²C</span></li>
+        <li>Широки работни граници: до <span class="highlight">~80 V</span> и <span class="highlight">-40…125 °C</span></li>
+      </ul>
+    </div>
+
+    <div class="zoomable custom-slide-image-container"
+         data-title="Interleaved bidirectional buck-boost схема (Фиг. 26)"
+         data-img="assets/LM5171_1.png">
+      <img src="assets/LM5171_1.png"
+           alt="Interleaved bidirectional buck-boost схема"
+           class="custom-slide-image">
+    </div>
+    </div>
+  </div>
+</section>
 
     <!-- SLIDE 8 -->
     <section class="slide" data-slide="8" data-notes="STM32L552: PWM таймери, ADC+DMA, комуникации, low-power. За мониторинг и управление."
@@ -224,44 +241,6 @@
           </p>
           <small>(клик за zoom)</small>
         </div>
-      </div>
-    </section>
-
-    <!-- SLIDE 10 -->
-    <section class="slide" data-slide="10" data-notes="Параметри + мини-калкулатор (по желание): покажи P=V·I и груба оценка на загуби."
-      data-section="Параметри">
-      <h2>ОСНОВНИ ПАРАМЕТРИ</h2>
-      <div class="stats-grid">
-        <div class="stat-card"><span class="stat-value">48V ↔ 24V</span><span class="stat-label">Напрежения</span></div>
-        <div class="stat-card"><span class="stat-value">1 kW</span><span class="stat-label">Мощност</span></div>
-        <div class="stat-card"><span class="stat-value">95-98%</span><span class="stat-label">КПД</span></div>
-        <div class="stat-card"><span class="stat-value">200 kHz</span><span class="stat-label">Честота</span></div>
-        <div class="stat-card"><span class="stat-value">4.7 μH</span><span class="stat-label">Индуктивност</span></div>
-        <div class="stat-card"><span class="stat-value">&lt;90°C</span><span class="stat-label">MOSFET Tj</span></div>
-      </div>
-          <div>
-            <label>Товарен ток (Ilv) <span class="highlight" id="iOutLbl">40</span> A</label>
-            <input type="range" id="iOut" min="0" max="60" value="40" step="1" />
-          </div>
-        </div>
-        <div class="row" style="margin-top:12px;">
-          <div>
-            <label>КПД <span class="highlight" id="etaLbl">95</span> %</label>
-            <input type="range" id="eta" min="88" max="99" value="95" step="1" />
-          </div>
-          <div>
-            <label>Целева мощност (лимит) <span class="highlight" id="pLimLbl">1000</span> W</label>
-            <input type="range" id="pLim" min="200" max="1200" value="1000" step="50" />
-          </div>
-        </div>
-        <div class="out">
-          <div class="pill">Pout: <span id="pOutVal">960</span> W</div>
-          <div class="pill">Pin: <span id="pInVal">1011</span> W</div>
-          <div class="pill">Ploss: <span id="pLossVal">51</span> W</div>
-        </div>
-        <p style="margin-top:10px;color:var(--text-secondary);font-weight:650;font-size:1.05rem;">
-          *Калкулаторът е за “live” показване на зависимости. Реалните стойности са от WEBENCH/симулации.
-        </p>
       </div>
     </section>
 
