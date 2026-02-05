@@ -11,19 +11,6 @@
   --glass: rgba(255,255,255,0.85);
 }
 
-/* Dark mode */
-html.dark{
-  --bg-primary:#0b1220;
-  --bg-secondary:#0f172a;
-  --text-primary:#e5e7eb;
-  --text-secondary:#9ca3af;
-  --accent-primary:#60a5fa;
-  --accent-hover:#93c5fd;
-  --border-color:#1f2a44;
-  --shadow:0 18px 40px rgba(0,0,0,0.35);
-  --chip-bg: rgba(15,23,42,0.75);
-  --glass: rgba(15,23,42,0.88);
-}
 
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{
