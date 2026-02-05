@@ -73,11 +73,6 @@ li::before{content:"▸";position:absolute;left:0;color:var(--accent-primary);fo
   user-select:none;
   transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
 }
-html.dark .image-placeholder{
-  background:linear-gradient(135deg,#111b31 0%,#0b1220 100%);
-  border-color:#334155;
-  color:var(--text-secondary);
-}
 .image-placeholder:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,0.15);border-color:var(--accent-primary)}
 .image-placeholder h4{font-size:1.1rem;margin-bottom:.5rem;color:var(--text-primary)}
 .image-placeholder small{opacity:.8}
@@ -95,7 +90,6 @@ html.dark .image-placeholder{
   text-align:center;
   backdrop-filter: blur(8px);
 }
-html.dark .stat-card{background:rgba(15,23,42,0.75)}
 .stat-value{font-size:2.5rem;font-weight:900;color:var(--accent-primary);display:block}
 .stat-label{font-size:1rem;color:var(--text-secondary);margin-top:.5rem}
 
@@ -143,7 +137,6 @@ html.dark .stat-card{background:rgba(15,23,42,0.75)}
   position:fixed;left:0;top:0;height:6px;width:100%;
   background:rgba(226,232,240,0.9);z-index:2100;
 }
-html.dark .progress{background:rgba(31,42,68,0.9)}
 .progress > div{
   height:100%;width:0%;
   background:var(--accent-primary);
@@ -189,7 +182,6 @@ html.dark .progress{background:rgba(31,42,68,0.9)}
 .nav-btn:hover{background:var(--accent-hover);transform:translateY(-1px)}
 .nav-btn:active{transform:scale(0.98)}
 .nav-btn:disabled{background:#94a3b3;cursor:not-allowed;transform:none;box-shadow:none}
-html.dark .nav-btn:disabled{background:#475569}
 
 .nav-ghost{
   background:transparent;color:var(--text-primary);
@@ -199,8 +191,6 @@ html.dark .nav-btn:disabled{background:#475569}
 }
 .nav-ghost:hover{background:rgba(148,163,184,0.15)}
 .nav-ghost:active{background:rgba(148,163,184,0.25)}
-html.dark .nav-ghost:hover{background:rgba(148,163,184,0.10)}
-html.dark .nav-ghost:active{background:rgba(148,163,184,0.20)}
 
 select.jump{
   border:1px solid var(--border-color);
@@ -269,7 +259,6 @@ select.jump{
   background:rgba(148,163,184,0.08);
   font-size:clamp(0.85rem,2vw,0.95rem);
 }
-html.dark .panel{background:var(--bg-secondary)}
 .kbd code{
   background:rgba(30,64,175,0.12);
   border:1px solid rgba(30,64,175,0.25);

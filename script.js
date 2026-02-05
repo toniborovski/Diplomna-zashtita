@@ -86,7 +86,6 @@ const clearBtn = document.getElementById('clearBtn');
 const laserDot = document.getElementById('laserDot');
 
 const fsBtn = document.getElementById('fsBtn');
-const darkBtn = document.getElementById('darkBtn');
 const autoBtn = document.getElementById('autoBtn');
 const printBtn = document.getElementById('printBtn');
 
@@ -275,10 +274,6 @@ function toggleHelp(){
 function toggleFullscreen(){
   if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
   else document.exitFullscreen?.();
-}
-function toggleDark(){
-  document.documentElement.classList.toggle('dark');
-  setModeChip();
 }
 
 // =============================
@@ -561,8 +556,8 @@ openPdfBtn.addEventListener('click', () => {
   // If you have a local file: set url to "thesis.pdf" (must be in same folder)
   // Note: some browsers restrict file:// if not served via local server.
   openPdfViewer({
-    title: 'PDF (пример)',
-    url: 'about:blank'
+    title: 'Дипломна работа - Тони Боровски',
+    url: 'assets/diplom_final.pdf'
   });
 });
 
@@ -621,7 +616,6 @@ penBtn.addEventListener('click', () => setPen(!penEnabled));
 clearBtn.addEventListener('click', clearDrawing);
 
 fsBtn.addEventListener('click', toggleFullscreen);
-darkBtn.addEventListener('click', toggleDark);
 
 autoBtn.addEventListener('click', toggleAutoplay);
 printBtn.addEventListener('click', () => window.print());
@@ -673,7 +667,6 @@ document.addEventListener('keydown', (e) => {
   else if (e.key === 'c' || e.key === 'C') { clearDrawing(); e.preventDefault(); }
 
   else if (e.key === 'f' || e.key === 'F') { toggleFullscreen(); e.preventDefault(); }
-  else if (e.key === 'm' || e.key === 'M') { toggleDark(); e.preventDefault(); }
 
   else if (e.key === 't' || e.key === 'T') { toggleAutoplay(); e.preventDefault(); }
 

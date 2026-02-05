@@ -87,7 +87,7 @@
   data-notes="48V като компромис между мощност, безопасност и ефективност. Защо не 12V и защо още не HV."
   data-section="Контекст">
 
-  <h2>ЗАЩО 48V В АВТОМОБИЛНИТЕ СИСТЕМИ</h2>
+  <h2>ЗАЩО 48V В АВТОМОБИЛНИТЕ<br> СИСТЕМИ</h2>
 
   <div class="content-grid">
     <div>
@@ -151,7 +151,7 @@
   data-notes="Първо – защо interleaved. После – как работи: 2 фази, 180°, по-нисък ripple, bidirectional."
   data-section="Топология">
 
-  <h2>INTERLEAVED BIDIRECTIONAL BUCK-BOOST</h2>
+  <h2>Двупосочен buck-boost с две фази</h2>
 
   <div class="content-grid">
     <div>
@@ -206,43 +206,36 @@
   </div>
 </section>
 
-    <!-- SLIDE 8 -->
-    <section class="slide" data-slide="8" data-notes="STM32L552: PWM таймери, ADC+DMA, комуникации, low-power. За мониторинг и управление."
-      data-section="Контролер">
-      <h2>МИКРОКОНТРОЛЕР STM32L552</h2>
-      <div class="content-grid">
-        <div>
-          <ul>
-            <li>ARM Cortex-M33 <span class="highlight">TrustZone</span></li>
-            <li>TIM1/TIM8: комплементарни PWM <span class="highlight">200 kHz</span></li>
-            <li>ADC + DMA за мониторинг</li>
-            <li>Комуникация: CAN-FD, SPI, UART, I²C</li>
-            <li>Вътрешен SMPS, ниска консумация</li>
-          </ul>
-        </div>
-        <div class="image-placeholder zoomable" data-title="Пинаут STM32L552 (Фиг. 38)" data-kind="placeholder">
-          <h4>Пинаут STM32L552</h4>
-          <p>Фигура 38 от дипломната работа</p>
-          <small>(клик за zoom)</small>
-        </div>
-      </div>
-    </section>
 
-    <!-- SLIDE 9 -->
-    <section class="slide" data-slide="9" data-notes="Пълна силова схема: портове HV/LV, MOSFET-и, сензори, ключови елементи."
-      data-section="Схема">
-      <h2>ПЪЛНА СИЛОВА СХЕМА</h2>
-      <div style="height:70%;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-        <div class="image-placeholder zoomable" data-title="Пълна силова схема (Фиг. 37)" data-kind="placeholder" style="height:500px;width:80%;">
-          <h4 style="font-size:1.3rem;">Пълна силова схема с LM5171 и MOSFETs</h4>
-          <p>Фигура 37 от дипломната работа</p>
-          <p style="margin-top:1rem;font-size:1.1rem;">
-            HV порт: 48-52V | LV порт: 24V/375F | MOSFET: Si7336ADP
-          </p>
-          <small>(клик за zoom)</small>
-        </div>
-      </div>
-    </section>
+ <!-- SLIDE 9 -->
+<section class="slide" data-slide="9"
+  data-notes="Пълна силова схема: портове HV/LV, MOSFET-и, сензори, ключови елементи."
+  data-section="Схема">
+
+  <h2>ПЪЛНА СИЛОВА СХЕМА</h2>
+
+  <div class="content-grid">
+    <div>
+      <ul>
+        <li>Пълна реализация на <span class="highlight">bidirectional buck–boost</span> топология</li>
+        <li>Отделни <span class="highlight">HV (48–52 V)</span> и <span class="highlight">LV (24 V)</span> портове</li>
+        <li>Силови ключове: <span class="highlight">Si7336ADP MOSFET</span></li>
+        <li>Токови и напреженови сензори за управление и защити</li>
+        <li>Съвместима с <span class="highlight">interleaved управление</span> от LM5171</li>
+      </ul>
+    </div>
+
+    <div class="zoomable custom-slide-image-container"
+         data-title="Пълна силова схема (Фиг. 37)"
+         data-img="assets/Pulna_silova_Shema.png">
+      <img src="assets/Pulna_silova_Shema.png"
+           alt="Пълна силова схема с LM5171 и MOSFETs"
+           class="custom-slide-image">
+    </div>
+  </div>
+
+</section>
+
 
     <!-- SLIDE 11 -->
     <section class="slide" data-slide="11" data-notes="WEBENCH: загуби, кое доминира, IRMS. Сравни с целевия КПД."
@@ -256,14 +249,20 @@
             <li>MOSFET загуби: <span class="highlight">5.4 W</span></li>
             <li>Индуктор: <span class="highlight">2.5 W</span></li>
             <li>Капацити: <span class="highlight">9 W</span> (ESR)</li>
-            <li>Cin/Cout IRMS: <span class="highlight">17.7 A</span></li>
           </ul>
         </div>
-        <div class="image-placeholder zoomable" data-title="WEBENCH таблица и графики" data-kind="placeholder">
-          <h4>WEBENCH таблица и графики</h4>
-          <p>Резултати от V.3 в дипломната</p>
-          <small>(клик за zoom)</small>
+        <div class="zoomable custom-slide-image-container"
+         data-title="TI WEBENCH резултати"
+         data-img="assets/WB_1.png">
+      <img src="assets/WB_1.png"
+           alt="TI WEBENCH резултати"
+           class="custom-slide-image">
         </div>
+      </div>
+      <div style="margin-top:1.2rem;display:flex;gap:0.8rem;flex-wrap:wrap;align-items:center;">
+        <a href="assets/WBDesign_BOOST.pdf" target="_blank" rel="noopener noreferrer" class="nav-btn nav-ghost">VIEW BOOST PDF</a>
+        <a href="assets/WBDesign_BUCK.pdf" target="_blank" rel="noopener noreferrer" class="nav-btn nav-ghost">VIEW BUCK PDF</a>
+        <p style="margin:0 0 0 0.6rem;color:var(--text-secondary);font-weight:600;font-size:0.95rem;">Отвори PDF в нов прозорец</p>
       </div>
     </section>
 
@@ -281,10 +280,13 @@
             <li>Vhv, Vlv напрежения</li>
           </ul>
         </div>
-        <div class="image-placeholder zoomable" data-title="LTspice схема и вълнови форми (Фиг. 54–56)" data-kind="placeholder">
-          <h4>LTspice схема и вълнови форми</h4>
-          <p>Фигури 54-56 от дипломната</p>
-          <small>(клик за zoom)</small>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:center;">
+          <div class="zoomable custom-slide-image-container" data-title="LTspice BOOST (10ms)" data-img="assets/LTSPICE_BOOST.png">
+            <img src="assets/LTSPICE_BOOST.png" alt="LTspice BOOST" class="custom-slide-image">
+          </div>
+          <div class="zoomable custom-slide-image-container" data-title="LTspice BUCK (10ms)" data-img="assets/LTSPICE_BUCK.png">
+            <img src="assets/LTSPICE_BUCK.png" alt="LTspice BUCK" class="custom-slide-image">
+          </div>
         </div>
       </div>
     </section>
@@ -295,18 +297,19 @@
       <h2>PSPICE + LM5171</h2>
       <div class="content-grid">
         <div>
-          <h3>С LM5171-Q1 (14.84ms):</h3>
+          <h3>С LM5171-Q1:</h3>
           <ul>
-            <li>L1=L2= <span class="highlight">4.7 μH</span></li>
-            <li>MOSFET: Si7336ADP</li>
-            <li>Interleaving: <span class="highlight">60-420°</span></li>
-            <li>Измерени токове през L1/L2</li>
+            <li>Готов модел от TI</li>
+            <li>Симулация с обратна връзка</span></li>
+            <li>Възможност за наблюдаване на преходни процеси</li>
           </ul>
         </div>
-        <div class="image-placeholder zoomable" data-title="PSpice схема и резултати (Фиг. 57–62)" data-kind="placeholder">
-          <h4>PSpice схема и резултати</h4>
-          <p>Фигури 57-62 от дипломната</p>
-          <small>(клик за zoom)</small>
+        <div class="zoomable custom-slide-image-container"
+         data-title="Interleaved bidirectional buck-boost схема (Фиг. 26)"
+         data-img="assets/PSpice_1.png">
+      <img src="assets/PSpice_1.png"
+           alt="Interleaved bidirectional buck-boost схема"
+           class="custom-slide-image">
         </div>
       </div>
     </section>
@@ -335,11 +338,8 @@
 
         <!-- Example: PDF open button (embedded viewer) -->
         <button class="nav-btn nav-ghost" id="openPdfBtn" style="margin-top:22px;">
-          Отвори PDF (пример)
+          Отвори дипломна работа (PDF)
         </button>
-        <p style="margin-top:10px;color:var(--text-secondary);font-weight:650;font-size:1.05rem;">
-          *Сложи твоя линк като <span class="highlight">data-pdf</span> (виж JS) или смени URL-а.
-        </p>
       </div>
     </section>
 
@@ -358,7 +358,7 @@
     <button class="nav-btn nav-ghost" id="clearBtn">Clear</button>
 
     <button class="nav-btn nav-ghost" id="fsBtn">Full</button>
-    <button class="nav-btn nav-ghost" id="darkBtn">Dark</button>
+    <!-- dark theme removed; light theme is default -->
 
     <button class="nav-btn nav-ghost" id="autoBtn">Auto</button>
     <button class="nav-btn nav-ghost" id="printBtn">Print</button>
